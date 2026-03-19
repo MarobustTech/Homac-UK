@@ -1,5 +1,5 @@
 // Client-side auth store using Fetch API
-import { API_URL } from "./utils" // Make sure this exists or hardcode
+import { API_URL } from "./utils"
 
 export interface User {
   id: string
@@ -13,9 +13,6 @@ export interface User {
 
 const AUTH_KEY = "homac_auth_user"
 const TOKEN_KEY = "homac_auth_token"
-
-// Explicit define API URL if import fails
-const BASE_URL = "http://localhost:3001/api"
 
 export function getStoredUser(): User | null {
   if (typeof window === "undefined") return null
@@ -54,7 +51,7 @@ export async function signIn(
   password: string,
 ): Promise<{ success: boolean; user?: User; error?: string }> {
   try {
-    const res = await fetch(`${BASE_URL}/auth/login`, {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -82,7 +79,7 @@ export async function signUp(
   password: string,
 ): Promise<{ success: boolean; user?: User; error?: string }> {
   try {
-    const res = await fetch(`${BASE_URL}/auth/register`, {
+    const res = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ firstName, lastName, email, password })

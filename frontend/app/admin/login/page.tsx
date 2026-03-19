@@ -105,7 +105,7 @@ export default function AdminLoginPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="admin@homacuk.com"
+                    placeholder="admin@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 bg-slate-900/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-primary"
@@ -155,19 +155,11 @@ export default function AdminLoginPage() {
               </Button>
             </form>
 
-            {/* Demo credentials */}
             <div className="mt-6 p-4 rounded-lg bg-slate-900/50 border border-slate-700">
-              <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">Demo Credentials</p>
-              <div className="space-y-1 text-sm">
-                <p className="text-slate-400">
-                  <span className="text-slate-500">Admin:</span>{" "}
-                  <code className="text-primary">admin@homacuk.com</code> / <code className="text-primary">admin123</code>
-                </p>
-                <p className="text-slate-400">
-                  <span className="text-slate-500">Editor:</span>{" "}
-                  <code className="text-accent">editor@homacuk.com</code> / <code className="text-accent">editor123</code>
-                </p>
-              </div>
+              <p className="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">Access</p>
+              <p className="text-sm text-slate-400">
+                Sign in with a backend user that has the <code className="text-primary">admin</code> role.
+              </p>
             </div>
           </CardContent>
         </Card>

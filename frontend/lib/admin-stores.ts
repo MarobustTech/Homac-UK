@@ -15,7 +15,14 @@ export interface Enquiry {
   assignedTo: string | null
   createdAt: string
   updatedAt: string
-  notes: any[]
+  notes: EnquiryNote[]
+}
+
+export interface EnquiryNote {
+  id: string
+  content: string
+  author: string
+  createdAt: string
 }
 
 // Adapting to match backend response structure
@@ -43,6 +50,14 @@ export async function saveEnquiry(enquiry: Partial<Enquiry>): Promise<void> {
       body: JSON.stringify(enquiry)
     })
   }
+}
+
+export async function addEnquiryNote(id: string, content: string, author: string): Promise<void> {
+  await fetch(`${API_URL}/enquiries/${id}/notes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content, author })
+  })
 }
 
 export async function deleteEnquiry(id: string): Promise<void> {

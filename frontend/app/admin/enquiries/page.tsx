@@ -18,7 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useAdminAuth } from "@/components/admin/admin-auth-context"
-import { getEnquiries, saveEnquiry, deleteEnquiry, type Enquiry } from "@/lib/admin-stores"
+import { addEnquiryNote, getEnquiries, saveEnquiry, deleteEnquiry, type Enquiry } from "@/lib/admin-stores"
 import { cn } from "@/lib/utils"
 
 type StatusFilter = "all" | "new" | "in_progress" | "contacted" | "converted" | "closed"
@@ -88,19 +88,13 @@ export default function EnquiriesPage() {
 
   const handleSaveNotes = async () => {
     if (selectedEnquiry) {
-      const updated: Enquiry = {
-        ...selectedEnquiry,
-        notes: editingNotes, // Note: Schema expects array, simplistic assignment here might need fix if notes is array of objects. Store type says any[].
-        updatedAt: new Date().toISOString(),
-      }
-      // Assuming backend handles string note or we should push to object logic.
-      // For now passing as is, but schema has EnquiryNote relation. 
-      // The update implementation in controller (if present) needs to handle this.
-      // Store just sends JSON.
-      await saveEnquiry(updated)
+      if (!editingNotes.trim()) return
+
+      await addEnquiryNote(selectedEnquiry.id, editingNotes, session?.user?.name || "Admin")
       const data = await getEnquiries()
       setEnquiries(data)
-      setSelectedEnquiry(updated)
+      setSelectedEnquiry(data.find((enquiry) => enquiry.id === selectedEnquiry.id) || selectedEnquiry)
+      setEditingNotes("")
     }
   }
 
@@ -227,7 +221,7 @@ export default function EnquiriesPage() {
                   className="hover:shadow-md transition-all cursor-pointer"
                   onClick={() => {
                     setSelectedEnquiry(enquiry)
-                    setEditingNotes(enquiry.notes || "")
+                    setEditingNotes("")
                     setShowModal(true)
                   }}
                 >
@@ -415,6 +409,23 @@ export default function EnquiriesPage() {
                   rows={4}
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
+
+                {selectedEnquiry.notes.length > 0 && (
+                  <div className="mt-4 space-y-3">
+                    <h4 className="text-sm font-medium text-slate-900 dark:text-white">History</h4>
+                    <div className="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-3 max-h-40 overflow-y-auto space-y-3">
+                      {selectedEnquiry.notes.map((note) => (
+                        <div key={note.id} className="text-sm">
+                          <div className="flex justify-between text-xs text-slate-500 mb-1">
+                            <span>{note.author}</span>
+                            <span>{new Date(note.createdAt).toLocaleDateString()}</span>
+                          </div>
+                          <p className="text-slate-700 dark:text-slate-300">{note.content}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Actions */}

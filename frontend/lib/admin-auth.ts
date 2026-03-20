@@ -1,6 +1,6 @@
 import { API_URL } from "./utils"
 
-export type AdminRole = "admin"
+export type AdminRole = "admin" | "editor"
 
 export interface AdminUser {
   id: string
@@ -31,11 +31,12 @@ const ADMIN_SESSION_KEY = "homac_admin_session"
 const ADMIN_AUDIT_KEY = "homac_admin_audit"
 
 function toAdminUser(user: BackendAuthUser): AdminUser {
+  const role: AdminRole = user.role === "editor" ? "editor" : "admin"
   return {
     id: user.id,
     email: user.email,
     name: `${user.firstName} ${user.lastName}`.trim(),
-    role: "admin",
+    role,
     createdAt: user.createdAt,
   }
 }

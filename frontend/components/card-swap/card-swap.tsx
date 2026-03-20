@@ -36,6 +36,12 @@ interface CardSwapProps {
   children: ReactNode
 }
 
+interface CardElementProps {
+  style?: CSSProperties
+  onClick?: (e: React.MouseEvent) => void
+  ref?: React.Ref<HTMLDivElement>
+}
+
 interface Slot {
   x: number
   y: number
@@ -63,6 +69,12 @@ const placeNow = (el: HTMLElement | null, slot: Slot, skew: number) => {
     zIndex: slot.zIndex,
     force3D: true,
   })
+}
+
+const clearSwapInterval = (interval: ReturnType<typeof setInterval> | null) => {
+  if (interval !== null) {
+    clearInterval(interval)
+  }
 }
 
 const CardSwap = ({
@@ -106,7 +118,7 @@ const CardSwap = ({
   const order = useRef(Array.from({ length: childArr.length }, (_, i) => i))
 
   const tlRef = useRef<gsap.core.Timeline | null>(null)
-  const intervalRef = useRef<ReturnType<typeof setInterval>>()
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const container = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -181,7 +193,7 @@ const CardSwap = ({
       const node = container.current
       const pause = () => {
         tlRef.current?.pause()
-        clearInterval(intervalRef.current)
+        clearSwapInterval(intervalRef.current)
       }
       const resume = () => {
         tlRef.current?.play()
@@ -192,26 +204,28 @@ const CardSwap = ({
       return () => {
         node.removeEventListener("mouseenter", pause)
         node.removeEventListener("mouseleave", resume)
-        clearInterval(intervalRef.current)
+        clearSwapInterval(intervalRef.current)
       }
     }
-    return () => clearInterval(intervalRef.current)
+    return () => clearSwapInterval(intervalRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDistance, verticalDistance, delay, pauseOnHover, skewAmount, easing])
 
-  const rendered = childArr.map((child, i) =>
-    isValidElement(child)
-      ? cloneElement(child as React.ReactElement<{ style?: CSSProperties; onClick?: () => void }>, {
-          key: i,
-          ref: refs[i],
-          style: { width, height, ...(child.props.style ?? {}) },
-          onClick: (e: React.MouseEvent) => {
-            ;(child.props as { onClick?: (e: React.MouseEvent) => void }).onClick?.(e)
-            onCardClick?.(i)
-          },
-        })
-      : child,
-  )
+  const rendered = childArr.map((child, i) => {
+    if (!isValidElement<CardElementProps>(child)) {
+      return child
+    }
+
+    return cloneElement(child as React.ReactElement<CardElementProps>, {
+      key: i,
+      ref: refs[i],
+      style: { width, height, ...(child.props.style ?? {}) },
+      onClick: (e: React.MouseEvent) => {
+        child.props.onClick?.(e)
+        onCardClick?.(i)
+      },
+    })
+  })
 
   return (
     <div ref={container} className="card-swap-container" style={{ width, height }}>

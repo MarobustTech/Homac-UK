@@ -1,24 +1,10 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Inter, Poppins } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/components/auth/auth-context"
 import { FloatingButtons } from "@/components/floating-buttons"
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-})
-
-const poppins = Poppins({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-  display: "swap",
-})
 
 export const metadata: Metadata = {
   title: "Homac UK - Premium Abacus & Mental Arithmetic Education",
@@ -72,7 +58,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
       </head>
-      <body className={`${inter.variable} ${poppins.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <AuthProvider>
           {children}
           <FloatingButtons />

@@ -40,10 +40,20 @@ const statusConfig = {
   closed: { label: "Closed", color: "bg-gray-100 text-gray-700", icon: CheckCircle2 },
 }
 
+type DashboardStat = {
+  label: string
+  value: string
+  change: string
+  changeType: "positive" | "negative" | "neutral"
+  icon: typeof MessageSquare
+  href: string
+  color: string
+}
+
 export default function AdminDashboard() {
   const { session, isLoading: authLoading } = useAdminAuth()
   const [mounted, setMounted] = useState(false)
-  const [dashboardStats, setStats] = useState([
+  const [dashboardStats, setStats] = useState<DashboardStat[]>([
     {
       label: "Total Enquiries",
       value: "0",

@@ -18,20 +18,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { useAdminAuth } from "@/components/admin/admin-auth-context"
-import { getTestimonials, saveTestimonial, deleteTestimonial } from "@/lib/admin-stores"
+import { getTestimonials, saveTestimonial, deleteTestimonial, type Testimonial as AdminTestimonial } from "@/lib/admin-stores"
 import { canPerformAction, logAuditEvent } from "@/lib/admin-auth"
 
-export interface Testimonial {
-  id: string
-  name: string
+type TestimonialStatus = "pending" | "approved" | "rejected"
+
+type Testimonial = Omit<AdminTestimonial, "role" | "image" | "status"> & {
   role: string
-  content: string
-  rating: number
-  image?: string
-  featured: boolean
-  status: "pending" | "approved" | "rejected"
-  createdAt: string
-  updatedAt: string
+  image: string
+  status: TestimonialStatus
+}
+
+function normalizeTestimonial(testimonial: AdminTestimonial): Testimonial {
+  return {
+    ...testimonial,
+    role: testimonial.role ?? "",
+    image: testimonial.image ?? "",
+    status: testimonial.status === "approved" || testimonial.status === "rejected" ? testimonial.status : "pending",
+  }
 }
 
 export default function TestimonialsManagement() {
@@ -56,7 +60,7 @@ export default function TestimonialsManagement() {
     setMounted(true)
     const load = async () => {
       const data = await getTestimonials()
-      setTestimonials(data)
+      setTestimonials(data.map(normalizeTestimonial))
     }
     load()
   }, [])
@@ -104,7 +108,7 @@ export default function TestimonialsManagement() {
     }
 
     const data = await getTestimonials()
-    setTestimonials(data)
+    setTestimonials(data.map(normalizeTestimonial))
 
     setShowForm(false)
     setEditingId(null)
@@ -132,7 +136,7 @@ export default function TestimonialsManagement() {
         await deleteTestimonial(id)
         logAuditEvent("testimonial_deleted", { id }, session?.user || null)
         const data = await getTestimonials()
-        setTestimonials(data)
+        setTestimonials(data.map(normalizeTestimonial))
       }
     }
   }
@@ -143,7 +147,7 @@ export default function TestimonialsManagement() {
       await saveTestimonial({ ...testimonial, status: "approved", updatedAt: new Date().toISOString() })
       logAuditEvent("testimonial_approved", { id }, session?.user || null)
       const data = await getTestimonials()
-      setTestimonials(data)
+      setTestimonials(data.map(normalizeTestimonial))
     }
   }
 
@@ -153,7 +157,7 @@ export default function TestimonialsManagement() {
       await saveTestimonial({ ...testimonial, featured: !testimonial.featured, updatedAt: new Date().toISOString() })
       logAuditEvent("testimonial_featured_toggled", { id, featured: !testimonial.featured }, session?.user || null)
       const data = await getTestimonials()
-      setTestimonials(data)
+      setTestimonials(data.map(normalizeTestimonial))
     }
   }
 
@@ -190,7 +194,6 @@ export default function TestimonialsManagement() {
               setFormData({
                 name: "",
                 role: "",
-                content: "",
                 content: "",
                 rating: 5,
                 image: "",

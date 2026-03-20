@@ -139,8 +139,16 @@ export function Footer() {
         <div className="border-t border-amber-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground gap-4">
             <p>&copy; 2026 Homac UK. All rights reserved.</p>
-            <p className="flex items-center gap-2">
-              Made with <Heart size={14} className="text-rose-500 fill-rose-500" /> for young learners worldwide
+              <p className="flex items-center gap-2">
+                <Heart size={14} className="text-rose-500 fill-rose-500" /> Designed & Developed by{" "} <a
+                href="https://marobust.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Marobust Tech Solutions
+              </a>
+              © {new Date().getFullYear()}              
             </p>
           </div>
         </div>

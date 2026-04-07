@@ -6,7 +6,7 @@ import { MessageCircle } from "lucide-react"
 
 export function FloatingButtons() {
   // Replace with your actual WhatsApp number (including country code, no + or spaces)
-  const whatsappNumber = "447123456789"
+  const whatsappNumber = "447301950469"
   const whatsappMessage = encodeURIComponent("Hello! I'm interested in learning more about Homac UK courses.")
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`
 

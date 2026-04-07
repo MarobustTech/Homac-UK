@@ -29,7 +29,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const contactMethods = [
-    { icon: Phone, label: "Call Us", value: "+44 20 7183 8000", href: "tel:+442035834124", color: "bg-teal-500" },
+    { icon: Phone, label: "Call Us", value: "+44 7301 950469", href: "tel:+447301950469", color: "bg-teal-500" },
     { icon: Mail, label: "Email Us", value: "homacuk@gmail.com", href: "homacuk@gmail.com", color: "bg-rose-500" },
     { icon: MapPin, label: "Visit Us", value: "London, United Kingdom", href: "#", color: "bg-amber-500" },
   ]

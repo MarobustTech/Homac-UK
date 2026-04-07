@@ -140,7 +140,7 @@ const ukFranchises = [
   { name: "Mrs. Sumathi", location: "Gants Hill & romford ", phone: "07538673867" },
   { name: "Mrs. Sivarani", location: "Milton Keynes", phone: "01908222907" },
   { name: "Mrs.Sivarubini", location: "Luton", phone: "07980205846" },
-  { name: "Mrs.azra", location: "Licesera", phone: "079429602354" },
+  { name: "Mrs.Azra", location: "Licesera", phone: "079429602354" },
 ]
 
 const countryContacts = [
